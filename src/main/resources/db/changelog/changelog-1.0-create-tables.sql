@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset init:1
+-- changeset wt:unit
 CREATE TABLE IF NOT EXISTS wtbooking.unit (
                       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                       rooms INT NOT NULL,
@@ -12,12 +12,21 @@ CREATE TABLE IF NOT EXISTS wtbooking.unit (
                       description TEXT
 );
 
--- changeset init:2
+-- changeset wt:app_user
+CREATE TABLE IF NOT EXISTS wtbooking.app_user (
+                         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                         username VARCHAR(255) NOT NULL,
+                         email VARCHAR(255) NOT NULL
+);
+
+-- changeset wt:booking
 CREATE TABLE IF NOT EXISTS wtbooking.booking (
                          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                          unit_id UUID NOT NULL REFERENCES unit(id),
+                         user_id UUID NOT NULL REFERENCES app_user(id),
                          start_date DATE NOT NULL,
                          end_date DATE NOT NULL,
                          total_cost NUMERIC(10,2) NOT NULL,
-                         status VARCHAR(50) NOT NULL
+                         status VARCHAR(50) NOT NULL,
+                         created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );

@@ -9,5 +9,6 @@
     <include file="db/changelog/changelog-1.0-create-tables.sql"/>
     <include file="db/changelog/changelog-1.1-insert-initial-units.sql"/>
     <include file="db/changelog/changelog-1.2-insert-random-units.xml"/>
+    <include file="db/changelog/changelog-1.3-insert-default-user.sql"/>
 
 </databaseChangeLog>

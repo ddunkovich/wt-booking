@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 /** Entity representing a booking event for a specific unit. */
@@ -36,5 +37,13 @@ public class Booking {
     private BigDecimal totalCost;
 
     @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
     private BookingStatus status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
 }

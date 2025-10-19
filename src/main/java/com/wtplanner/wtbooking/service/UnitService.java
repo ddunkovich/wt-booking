@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -58,18 +57,5 @@ public class UnitService {
             cacheService.adjustCount(+1, repo.countAvailable());
         }
         return saved;
-    }
-
-    /** Mark Unit as booked and update cache accordingly */
-    @Transactional
-    public void markBooked(UUID id) {
-        repo.findById(id).ifPresent(u -> {
-            if (Boolean.TRUE.equals(u.isAvailable())) {
-                u.setAvailable(false);
-                repo.save(u);
-                log.debug("Updating Unit availability in database, id={}", id);
-                cacheService.adjustCount(-1, repo.countAvailable());
-            }
-        });
     }
 }

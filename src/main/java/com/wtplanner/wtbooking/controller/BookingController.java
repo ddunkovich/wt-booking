@@ -1,44 +1,47 @@
 package com.wtplanner.wtbooking.controller;
 
+import com.wtplanner.wtbooking.model.dto.BookingRequestDto;
+import com.wtplanner.wtbooking.model.dto.BookingResponseDto;
 import com.wtplanner.wtbooking.model.entity.Booking;
 import com.wtplanner.wtbooking.service.BookingService;
-import com.wtplanner.wtbooking.service.UnitService;
 import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.format.annotation.DateTimeFormat;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
 import java.util.Map;
 import java.util.UUID;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/wtbooking")
 public class BookingController {
 
-    private final UnitService unitService;
     private final BookingService bookingService;
 
-    public BookingController(UnitService unitService, BookingService bookingService) {
-        this.unitService = unitService;
-        this.bookingService = bookingService;
-    }
-
-    @Operation(summary = "Create a new booking")
     @PostMapping("/bookings")
-    public ResponseEntity<?> book(@RequestParam UUID unitId,
-                                  @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
-                                  @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
+    @Operation(summary = "Create a new booking")
+    public ResponseEntity<?> book(@RequestBody BookingRequestDto request) {
         try {
-            if (start == null || end == null || !end.isAfter(start)) {
+            if (request.getStart() == null || request.getEnd() == null || !request.getEnd().isAfter(request.getStart())) {
                 return ResponseEntity.badRequest().body(Map.of("error", "Invalid date range"));
             }
-            Booking booking = bookingService.book(unitId, start, end);
+            if (request.getUserId() == null || request.getUnitId() == null) {
+                return ResponseEntity.badRequest().body(Map.of("error", "userId and unitId are required"));
+            }
+
+            Booking booking = bookingService.book(
+                    request.getUserId(),
+                    request.getUnitId(),
+                    request.getStart(),
+                    request.getEnd()
+            );
+
             return ResponseEntity.ok(booking);
         } catch (Exception e) {
             return ResponseEntity
@@ -47,11 +50,41 @@ public class BookingController {
         }
     }
 
+    @Operation(summary = "Simulate booking payment")
+    @PostMapping("/bookings/{id}/pay")
+    public ResponseEntity<?> pay(@PathVariable UUID id) {
+        try {
+            Booking b = bookingService.markAsPaid(id);
+            BookingResponseDto result = new BookingResponseDto(
+                    b.getId(),
+                    b.getUnit().getId(),
+                    b.getUser().getId(),
+                    b.getStartDate(),
+                    b.getEndDate(),
+                    b.getTotalCost(),
+                    b.getStatus()
+            );
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", "Booking not found", "details", e.getMessage()));
+        }
+    }
+
     @Operation(summary = "Cancel booking by ID")
     @PostMapping("/bookings/{id}/cancel")
     public ResponseEntity<?> cancel(@PathVariable UUID id) {
         try {
-            Booking result = bookingService.cancel(id);
+            Booking b = bookingService.cancel(id);
+            BookingResponseDto result = new BookingResponseDto(
+                    b.getId(),
+                    b.getUnit().getId(),
+                    b.getUser().getId(),
+                    b.getStartDate(),
+                    b.getEndDate(),
+                    b.getTotalCost(),
+                    b.getStatus()
+            );
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             return ResponseEntity

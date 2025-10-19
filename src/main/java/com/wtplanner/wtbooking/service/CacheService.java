@@ -36,15 +36,22 @@ public class CacheService {
 
     /** Increment or decrement cached count if cache is valid */
     public void adjustCount(int delta, long fallbackCount) {
+        if (!adjustCount(delta)) {
+            // Rebuild cache from database count
+            updateCount(fallbackCount);
+        }
+    }
+
+    /** Increment or decrement cached count if cache is valid */
+    public boolean adjustCount(int delta) {
         String current = redis.opsForValue().get(COUNT_KEY);
         if (current != null && isValid()) {
             long newCount = Long.parseLong(current) + delta;
             if (newCount < 0) newCount = 0;
             redis.opsForValue().set(COUNT_KEY, String.valueOf(newCount));
-        } else {
-            // Rebuild cache from database count
-            updateCount(fallbackCount);
+            return true;
         }
+        return false;
     }
 }
 

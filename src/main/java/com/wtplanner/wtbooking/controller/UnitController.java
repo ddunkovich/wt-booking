@@ -4,6 +4,7 @@ import com.wtplanner.wtbooking.model.dto.UnitDto;
 import com.wtplanner.wtbooking.model.entity.Unit;
 import com.wtplanner.wtbooking.service.UnitService;
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,14 +18,11 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/wtbooking")
 public class UnitController {
 
     private final UnitService unitService;
-
-    public UnitController(UnitService unitService) {
-        this.unitService = unitService;
-    }
 
     @Operation(summary = "Search available units by cost range with pagination and sorting")
     @GetMapping("/search")
