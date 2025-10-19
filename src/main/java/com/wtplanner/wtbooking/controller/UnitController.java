@@ -1,5 +1,6 @@
 package com.wtplanner.wtbooking.controller;
 
+import com.wtplanner.wtbooking.model.dto.UnitDto;
 import com.wtplanner.wtbooking.model.entity.Unit;
 import com.wtplanner.wtbooking.service.UnitService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -86,11 +87,19 @@ public class UnitController {
     }
 
     @Operation(summary = "Add a new unit")
-    @PostMapping
-    public ResponseEntity<?> addUnit(@RequestBody Unit unit) {
+    @PostMapping("/units")
+    public ResponseEntity<?> addUnit(@RequestBody UnitDto dto) {
         try {
-            Unit saved = unitService.save(unit);
-            return ResponseEntity.ok(saved);
+            // Default values
+            if (dto.getBookingMarkupPercent() == null) {
+                dto.setBookingMarkupPercent(BigDecimal.valueOf(15));
+            }
+            if (dto.getIsAvailable() == null) {
+                dto.setIsAvailable(true);
+            }
+
+            Unit saved = unitService.save(dto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
 
         } catch (Exception e) {
             return ResponseEntity
