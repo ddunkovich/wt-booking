@@ -1,0 +1,108 @@
+{
+  "info": {
+    "name": "WtBooking",
+    "_postman_id": "b29cf48c-63b8-4c84-a9b0-25d31e9d4f50",
+    "description": "Collection for WT Booking API (search units, book, cancel, count, swagger)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Swagger UI",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:10345/swagger-ui/index.html",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "10345",
+          "path": ["swagger-ui", "index.html"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Search Units (by cost range, pagination, sorting)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:10345/wtbooking/units?minCost=100&maxCost=300&page=0&size=10&sort=cost,asc",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "10345",
+          "path": ["wtbooking", "units"],
+          "query": [
+            { "key": "minCost", "value": "100" },
+            { "key": "maxCost", "value": "300" },
+            { "key": "page", "value": "0" },
+            { "key": "size", "value": "10" },
+            { "key": "sort", "value": "cost,asc" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Book Unit",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/x-www-form-urlencoded" }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            { "key": "unitId", "value": "PUT-UNIT-UUID-HERE" },
+            { "key": "start", "value": "2025-11-01" },
+            { "key": "end", "value": "2025-11-05" }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:10345/wtbooking/bookings",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "10345",
+          "path": ["wtbooking", "bookings"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Cancel Booking",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:10345/wtbooking/bookings/{{bookingId}}/cancel",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "10345",
+          "path": ["wtbooking", "bookings", "{{bookingId}}", "cancel"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Count Available Units",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:10345/wtbooking/units/available/count",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "10345",
+          "path": ["wtbooking", "units", "available", "count"]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "bookingId",
+      "value": "PUT-BOOKING-UUID-HERE"
+    }
+  ]
+}
