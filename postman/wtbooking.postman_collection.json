@@ -91,6 +91,21 @@
 		},
 		{
 			"name": "Add Unit",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Save bookingId from response body",
+							"const response = pm.response.json();",
+							"pm.environment.set(\"unitId\", response.id);"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [
@@ -206,7 +221,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"userId\": \"00000000-0000-0000-0000-000000000000\",\n  \"unitId\": \"00428041-210c-44f2-80c4-29c0792b2a13\",\n  \"start\": \"2025-10-20\",\n  \"end\": \"2025-10-22\"\n}"
+					"raw": "{\n  \"userId\": \"00000000-0000-0000-0000-000000000000\",\n  \"unitId\": \"{{unitId}}\",\n  \"start\": \"2025-10-20\",\n  \"end\": \"2025-10-22\"\n}"
 				},
 				"url": {
 					"raw": "http://localhost:10345/wtbooking/bookings",

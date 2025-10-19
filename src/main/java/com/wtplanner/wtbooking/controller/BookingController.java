@@ -1,3 +1,9 @@
+/*
+ * © 2025 Danil Dunkovich. All rights reserved.
+ * Provided for evaluation purposes only.
+ * Any commercial use, distribution, or modification requires explicit permission.
+ */
+
 package com.wtplanner.wtbooking.controller;
 
 import com.wtplanner.wtbooking.model.dto.BookingRequestDto;
